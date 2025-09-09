@@ -6,8 +6,7 @@ import { Footer } from "../components/Footer/Footer";
 const headerContent = document.querySelector("header");
 headerContent.innerHTML = header;
 
-const API_KEY = import.meta.env.VITE_API_KEY;
-
+const API_ACCS = import.meta.env.VITE_API_ACCS;
 let searchKey = "developer";
 let orderBy = "";
 let orientation = "";
