@@ -10,15 +10,22 @@ const API_ACCS = import.meta.env.VITE_API_ACCS;
 let searchKey = "developer";
 let orderBy = "";
 let orientation = "";
+let actualPage = 1;
+let totalPages = 1;
 
+//Creo la funcion  para recoger las fotos de la api
 const getPhotos = async () => {
   const res = await fetch(
-    `https://api.unsplash.com/search/photos?page=1&per_page=30&query=${searchKey}&client_id=${API_ACCS}&order_by=${orderBy}${orientation}`
+    `https://api.unsplash.com/search/photos?page=${actualPage}&per_page=30&query=${searchKey}&client_id=${API_ACCS}&order_by=${orderBy}${orientation}`
   );
   const data = await res.json();
+  totalPages = data.total_pages;
   mapPhotos(data.results);
+  updateButtons();
+  console.log(totalPages);
 };
 
+//Funcion para mapear las fotos con las claves que nos interesan
 const mapPhotos = (photos) => {
   const mappedPhotos = photos.map((photo) => ({
     alt: photo.alt_description,
@@ -30,6 +37,7 @@ const mapPhotos = (photos) => {
   printPhotos(mappedPhotos);
 };
 
+//Funcion para pintar las fotos 
 const printPhotos = (photos) => {
   const ul = document.querySelector("#photo_grid");
   ul.innerHTML = "";
@@ -49,11 +57,11 @@ const printPhotos = (photos) => {
   }
 };
 
-//Recojo lo escrito en el input para modificar la searchKey
+//Recojo lo escrito en el input para modificar la searchKey para hacer la busqueda
 const newSearch = () => {
   const input = document.querySelector("#search-input").value;
   searchKey = input;
-  console.log(searchKey);
+  actualPage = 1;
 };
 
 //Doy funcionalidad al filtro orderBy
@@ -71,17 +79,17 @@ const selectedOrientation = () => {
     orientation = `&orientation=${selectedOrientation.value}`;
     const photo_grid = document.querySelector("#photo_grid");
     if (selectedOrientation.value === "landscape") {
-      photo_grid.className = "landscape"
-    }
+      photo_grid.className = "landscape";
+    };
     if (selectedOrientation.value === "portrait") {
-      photo_grid.className = "portrait"
-    }
+      photo_grid.className = "portrait";
+    };
     if (selectedOrientation.value === "squarish") {
-      photo_grid.className = "squarish"
-    }
+      photo_grid.className = "squarish";
+    };
   } else {
     orientation = "";
-  }
+  };
 };
 
 //Creo el eventlistener para dar funcionalidad al boton Buscar
@@ -104,9 +112,48 @@ inputEnter.addEventListener("keydown", (event) => {
   }
 });
 
+//creo una funcion para actualizar el estado de los botones de pasar pagina
+const updateButtons = () => {
+  previusBtn.disabled = actualPage === 1;
+  if (previusBtn.disabled) {
+    previusBtn.style = "background-color: #cccece80; cursor: default;";
+  } else {
+    previusBtn.style = "cursor: pointer; background-color: #00bcd4;";
+  };
+  nextBtn.disabled = actualPage >= totalPages;
+  if (nextBtn.disabled) {
+    previusBtn.style = "background-color: #cccece80; cursor: default;";
+  } else {
+    nextBtn.style = "background-color: #00bcd4; cursor: pointer;";
+  };
+};
+
+//Doy funcionalidad al boton Pagina anterior
+const previusBtn = document.querySelector("#previus");
+previusBtn.addEventListener("click", () => {
+  if (actualPage > 1) {
+    actualPage -= 1;
+    getPhotos();
+    updateButtons();
+  }
+  console.log(actualPage);
+});
+
+//Doy funcionalidad al boton Pagina siguiente
+const nextBtn = document.querySelector("#next");
+nextBtn.addEventListener("click", () => {
+  actualPage += 1;
+  getPhotos();
+  updateButtons();
+  console.log(actualPage);
+});
+
+//pintamos el footer
 const footerContent = document.querySelector("footer");
 footerContent.innerHTML = Footer;
 
+//Pintamos la pagina de inicio al cargar la pagina por primera vez o recargar pagina.
 window.addEventListener("DOMContentLoaded", () => {
   getPhotos();
+  updateButtons();
 });
