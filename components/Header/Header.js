@@ -10,10 +10,10 @@ export const header = `
             <option value="latest">Ultimas añadidas</option>
         </select>
         <select name="Filtro 2" id="orientation">
-            <option value="" disabled selected>Orientacion </option>
-            <option value="landscape">Horizontal</option>
-            <option value="portrait">Vertical</option>
-            <option value="squarish">Cuadrada</option>
+            <option value="">Orientacion </option>
+            <option id="landscape" value="landscape">Horizontal</option>
+            <option id="portrait" value="portrait">Vertical</option>
+            <option id="squarish" value="squarish">Cuadrada</option>
         </select>
         <button id="search-btn">Buscar</button>
     </div>

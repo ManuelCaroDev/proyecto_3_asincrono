@@ -6,16 +6,15 @@ import { Footer } from "../components/Footer/Footer";
 const headerContent = document.querySelector("header");
 headerContent.innerHTML = header;
 
-const accessKey = "PZd8jQ_rF35-RW6XNGBDazja9A2LiMAmvwQStbPz2io";
-const secretKey = "EFN9YB-JgLJH7YUy18KcEPKBx2FAi0OakVRrJRfuDCM";
+const API_KEY = import.meta.env.VITE_API_KEY;
+
 let searchKey = "developer";
 let orderBy = "";
 let orientation = "";
-let orientationValue = "";
 
 const getPhotos = async () => {
   const res = await fetch(
-    `https://api.unsplash.com/search/photos?page=1&per_page=30&query=${searchKey}&client_id=${accessKey}&order_by=${orderBy}${orientation}${orientationValue}`
+    `https://api.unsplash.com/search/photos?page=1&per_page=30&query=${searchKey}&client_id=${API_KEY}&order_by=${orderBy}${orientation}`
   );
   const data = await res.json();
   mapPhotos(data.results);
@@ -36,12 +35,18 @@ const printPhotos = (photos) => {
   const ul = document.querySelector("#photo_grid");
   ul.innerHTML = "";
 
-  for (const photo of photos) {
-    const li = document.createElement("li");
-    li.innerHTML = `
-    <a href="${photo.hi_resolution}" target="_blank"><img src="${photo.photo}" alt="${photo.alt_description}" style="box-shadow:  0 4px 4px ${photo.color}"></a>
+  if (photos.length) {
+    for (const photo of photos) {
+      const li = document.createElement("li");
+      li.innerHTML = `
+    <a href="${photo.hi_resolution}" target="_blank"><img class="img" src="${photo.photo}" alt="${photo.alt_description}" style="box-shadow:  0 4px 4px ${photo.color}"></a>
     `;
-    ul.appendChild(li);
+      ul.appendChild(li);
+    }
+  } else {
+    const h2 = document.createElement("h2");
+    h2.innerHTML = "No hay resultados, prueba otra vez!";
+    ul.before(h2);
   }
 };
 
@@ -61,9 +66,22 @@ const selectedOrderBy = () => {
 //Doy funcionalidad al filtro orientation
 const selectedOrientation = () => {
   const selectedOrientation = document.querySelector("#orientation");
+  console.log(selectedOrientation.value);
+
   if (selectedOrientation.value) {
-    orientation = "&orientation=";
-    orientationValue = selectedOrientation.value;
+    orientation = `&orientation=${selectedOrientation.value}`;
+    const photo_grid = document.querySelector("#photo_grid");
+    if (selectedOrientation.value === "landscape") {
+      photo_grid.className = "landscape"
+    }
+    if (selectedOrientation.value === "portrait") {
+      photo_grid.className = "portrait"
+    }
+    if (selectedOrientation.value === "squarish") {
+      photo_grid.className = "squarish"
+    }
+  } else {
+    orientation = "";
   }
 };
 
@@ -73,7 +91,7 @@ btn.addEventListener("click", () => {
   selectedOrderBy();
   selectedOrientation();
   newSearch();
-  getPhotos(searchKey);
+  getPhotos();
 });
 
 //aqui creo un eventlistener para que al pulsar enter haga la busqueda sin dar click al boton Buscar
@@ -83,13 +101,13 @@ inputEnter.addEventListener("keydown", (event) => {
     selectedOrderBy();
     selectedOrientation();
     newSearch();
-    getPhotos(searchKey);
+    getPhotos();
   }
-});
-
-window.addEventListener("DOMContentLoaded", () => {
-  getPhotos(searchKey);
 });
 
 const footerContent = document.querySelector("footer");
 footerContent.innerHTML = Footer;
+
+window.addEventListener("DOMContentLoaded", () => {
+  getPhotos();
+});

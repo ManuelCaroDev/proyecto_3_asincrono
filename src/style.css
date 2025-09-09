@@ -1,8 +1,8 @@
 * {
   margin: 0;
-  padding:0 ;
+  padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -22,6 +22,12 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+h2 {
+  min-height: 500px;
+  padding: 0 10px;
+  text-align: center;
 }
 
 #changePage {
@@ -63,8 +69,6 @@ main {
 #photo_grid a {
   width: 100%;
   cursor: zoom-in;
-  
-
 }
 
 #photo_grid img {
@@ -72,4 +76,15 @@ main {
   height: 400px;
   object-fit: cover;
   border-radius: 10px;
+}
+
+#photo_grid.landscape img {
+  height: 200px;
+}
+
+#photo_grid.portrait img {
+  height: 400px;
+}
+#photo_grid.squarish img {
+  height: 300px;
 }
