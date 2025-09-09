@@ -13,7 +13,7 @@ let orientation = "";
 
 const getPhotos = async () => {
   const res = await fetch(
-    `https://api.unsplash.com/search/photos?page=1&per_page=30&query=${searchKey}&client_id=${API_KEY}&order_by=${orderBy}${orientation}`
+    `https://api.unsplash.com/search/photos?page=1&per_page=30&query=${searchKey}&client_id=${API_ACCS}&order_by=${orderBy}${orientation}`
   );
   const data = await res.json();
   mapPhotos(data.results);
